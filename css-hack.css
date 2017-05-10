@@ -1,0 +1,137 @@
+/*css hack*/
+
+/**
+1.IE条件注释法
+*/
+/*
+<!--[if IE]>
+<link type="text/css" href="text.css" rel="stylesheet" />
+<![endif]-->
+*/
+/*<!--[if IE]>  只在IE6下生效 */
+/*结合lte,lt,get,gt,! 关键字来进行注释，lte表示小于等于，lt表示小于，gte表示大于等于，gt表示大于，！表示不等于。*/
+
+/**
+2.选择符前缀法
+*/
+*html /*只对IE6生效，*/
+*+html /*前缀只对IE7生效*/
+/*demo*/
+.test{width:80px;}
+*html .test{width:60px;}
+*+html .texs{width:70px;}
+/**
+3.样式属性前缀法
+例如"_"只在IE6下生效，“*”在IE6和IE7下生效
+*/
+/*最流行的hack方式是选择符前缀法和样式属性前缀法，可以根据需要选择使用。*/
+
+
+/*记忆点
+1.关于a标签的四种状态排序问题，简单好记的原则——love hate原则，即l(link)ov(visited)e h(hover)a(active)te。
+
+2.hasLayout
+hasLayout是IE浏览器专有的一个属性，用于CSS的解析引擎。有时候在IE下一些复杂的CSS设置解析起来会出现Bug，其原因可能与hasLayout没有被自动触发有关，我们通过一些技巧，手动出发hasLayout属性就可以解决Bug了。
+*/
+.demo{
+	zoom:1; /*触发hasLayout，常用、安全、有效*/
+	/*在zoom：1触发无效的时候，可以使用下列属性触发*/
+	position:relative;
+}
+
+/*hasLayout的设计初衷是用于辅助块级元素的盒模型解析的，它是用于块级元素的。如果用于行内元素，会引发一些特殊的效果。*/
+
+/*如果触发行内元素的hasLayout，就会让行内元素拥有一些块级元素的特性。*/
+.demo{
+	/*设置了*/
+	position:absolute；
+	float:left;
+	float:right;
+	/*中的任意一个，都会让元素以display:inline-block的方式现实*/
+}
+
+/*水平居中*/
+.h-center{
+	text-align:center;/*行内元素水平居中*/
+	margin-left:auto;margin-right:auto;/*块级元素水平居中*/
+}
+
+/*方法一：通过设置table标签实现不定宽块级元素水平居中*/
+table{margin-left:auto;margin-right:auto;}
+
+	/*方法二：改变块级元素的display为inline类型，然后使用text-align:center来实现居中*/
+	/*行内元素比起块级元素缺少一些功能，比如设定长宽值，会给CSS设置带来一些限制*/
+
+	/*方法三：通过给父元素设置float，然后父元素设置position:relative和left:50%，子元素设置position:relative和left:-50%;来实现水平居中。它可以保留块级元素仍以display:block的形状显示，而且不会添加无语义标签，不增加嵌套深度，但它的缺点是设置了position:relative，带来了一定的副作用。*/
+	.parent{
+		position:relative;
+		left:50%;
+	}
+	.child{
+		position:relative;
+		left:-50%;
+	}
+
+/*垂直居中*/
+
+/*父元素高度不确定的文本、图片、块级元素的竖直居中是通过给父容器设置相同上下边距实现的。*/
+/*父元素高度确定的单行文本的竖直居中，是通过给父元素设置line-height来实现的，line-height值和父元素的高度值相同*/
+
+/*父元素高度确定的多行文本、图片、块级元素竖直居中*/
+/*方法一：竖直居中属性 vertical-align，但只有父元素为td或th时，属性才会生效；或设置块级元素display类型为table-cell，激活vertical-align属性，这种方法不兼容IE6和IE7。*/
+.v-center{
+	display: table-cell;
+	vertical-align: middle;
+}
+/*方法二：设置父级position为relative，子级为absolute，然后在分别给父子两层设置top:50%和top:-50%来实现居中。*/
+.v-center{
+	position: absolute;
+	top:50%;
+	left:50%;
+	margin-left: -50%;
+	margin-top: -50%;
+	/*也可以用CSS3的位移属性设置上边，左边偏移50%*/
+}
+
+
+/*网格布局*/
+/*注意：main的内容比起sidebar更重要，无论sidebar和main在样式上谁左谁右，在html标签上要保证main标签在sidebar之前被加载。*/
+
+/*html结构*/
+/*
+<header></header>
+<main>
+	<article class="layout layout-lr-7025">
+		<div class="main"></div>
+		<aside class="aside"></aside>
+	</article>
+	<article class="layout layout-rl-6035">
+		<div class="main"></div>
+		<aside class="aside"></aside>
+	</article>	
+</main>
+<footer></footer>
+*/
+
+/*通过分解组合类的形式来实现布局*/
+article{clear: both;}
+header{}
+footer{clear: both;}
+.main{}
+aside{}
+.layout-lr-7025 .main{float: left;width: 70%;}
+.layout-lr-7025 .aside{float: right;width: 25%;}
+
+.layout-rl-7025 .main{float: right;width: 70%;}
+.layout-rl-7025 .aside{float: left;width: 25%;}
+
+.layout-lr-6035 .main{float: left;width: 60%;}
+.layout-lr-6035 .aside{float: right;width: 35%;}
+
+.layout-rl-6035 .main{float: right;width: 60%;}
+.layout-rl-6035 .aside{float: left;width: 35%;}
+
+
+
+/*网页其实是三围结构，除了x、y轴，它还有z轴。z轴在元素设置position为absolute或relative后被激活，其大小由z-index设置，z-index越大，元素位置就越靠上。*/
+
